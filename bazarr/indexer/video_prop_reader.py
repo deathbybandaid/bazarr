@@ -17,7 +17,7 @@ def video_prop_reader(file):
 
     if os.path.splitext(file)[1] not in VIDEO_EXTENSION:
         # unsupported file extension so we don't care about it and return an empty dict
-        logging.debug(f'Unsupported file extension: {file}')
+        logging.debug(f"Unsupported file extension: {file}")
         return video_prop
 
     # get the ffprobe path
@@ -41,7 +41,9 @@ def video_prop_reader(file):
                 else:
                     data = mkv
     else:
-        logging.debug(f"ffprobe not available and enzyme doesn't support this file extension: {file}")
+        logging.debug(
+            f"ffprobe not available and enzyme doesn't support this file extension: {file}"
+        )
 
     if data:
         audio_language = []
@@ -53,19 +55,24 @@ def video_prop_reader(file):
 
         if ffprobe_path:
             # if ffprobe has been used, we populate our dict using returned values
-            file_size = data['size']
-            if 'video' in data and len(data['video']):
-                video_resolution = data['video'][0]['resolution']
-                if 'codec' in data['video'][0]:
-                    video_codec = data['video'][0]['codec']
-            if 'audio' in data and len(data['audio']):
-                audio_codec = data['audio'][0]['codec']
-                for audio_track in data['audio']:
-                    if 'language' in audio_track:
-                        audio_lang = audio_track['language'].alpha3
+            file_size = data["size"]
+            if "video" in data and len(data["video"]):
+                video_resolution = data["video"][0]["resolution"]
+                if "codec" in data["video"][0]:
+                    video_codec = data["video"][0]["codec"]
+            if "audio" in data and len(data["audio"]):
+                audio_codec = data["audio"][0]["codec"]
+                for audio_track in data["audio"]:
+                    if "language" in audio_track:
+                        audio_lang = audio_track["language"].alpha3
                         if audio_lang:
-                            converted_audio_lang = language_from_alpha3(audio_track['language'].alpha3)
-                            if converted_audio_lang and converted_audio_lang not in audio_language:
+                            converted_audio_lang = language_from_alpha3(
+                                audio_track["language"].alpha3
+                            )
+                            if (
+                                converted_audio_lang
+                                and converted_audio_lang not in audio_language
+                            ):
                                 audio_language.append(converted_audio_lang)
                             elif not converted_audio_lang:
                                 pass
@@ -76,7 +83,7 @@ def video_prop_reader(file):
             file_size = os.path.getsize(file)
             if len(data.video_tracks):
                 for video_track in data.video_tracks:
-                    video_resolution = str(video_track.height) + 'p'
+                    video_resolution = str(video_track.height) + "p"
                     video_codec = video_track.codec_id
 
             if len(data.audio_tracks):
@@ -84,11 +91,11 @@ def video_prop_reader(file):
                 for audio_track in data.audio_tracks:
                     audio_language.append(audio_track.name)
 
-        video_prop['audio_language'] = str(audio_language)
-        video_prop['format'] = video_format
-        video_prop['resolution'] = video_resolution
-        video_prop['video_codec'] = video_codec
-        video_prop['audio_codec'] = audio_codec
-        video_prop['file_size'] = file_size
+        video_prop["audio_language"] = str(audio_language)
+        video_prop["format"] = video_format
+        video_prop["resolution"] = video_resolution
+        video_prop["video_codec"] = video_codec
+        video_prop["audio_codec"] = audio_codec
+        video_prop["file_size"] = file_size
 
     return video_prop

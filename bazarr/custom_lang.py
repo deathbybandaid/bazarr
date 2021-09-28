@@ -45,7 +45,11 @@ class CustomLanguage:
 
         for sub in cls.__subclasses__():
             table.insert(
-                {table.code3: sub.alpha3, table.code2: sub.alpha2, table.name: sub.name}
+                {
+                    table.code3: sub.alpha3,
+                    table.code2: sub.alpha2,
+                    table.name: sub.name,
+                }
             ).on_conflict(action="IGNORE").execute()
 
     @classmethod
@@ -155,7 +159,9 @@ class ChineseTraditional(CustomLanguage):
         ):
             to_return = "zh"
 
-        elif any(ext in extension[-12:] for ext in cls._extensions_disamb_forced):
+        elif any(
+            ext in extension[-12:] for ext in cls._extensions_disamb_forced
+        ):
             to_return = "zh:forced"
 
         # Traditional chinese
@@ -192,7 +198,15 @@ class LatinAmericanSpanish(CustomLanguage):
         "argent",
         "latam",
     )
-    _extensions = (".es-la", ".spl", ".spa-la", ".ea", ".es-mx", ".lat", ".es.ar")
+    _extensions = (
+        ".es-la",
+        ".spl",
+        ".spa-la",
+        ".ea",
+        ".es-mx",
+        ".lat",
+        ".es.ar",
+    )
     _extensions_forced = (
         ".es-la.forced",
         ".spl.forced",

@@ -24,7 +24,9 @@ def _handle_alpha3(detected_language: dict):
 
 
 def embedded_subs_reader(file, file_size, media_type, use_cache=True):
-    data = parse_video_metadata(file, file_size, media_type, use_cache=use_cache)
+    data = parse_video_metadata(
+        file, file_size, media_type, use_cache=use_cache
+    )
 
     subtitles_list = []
     if data["ffprobe"] and "subtitle" in data["ffprobe"]:
@@ -73,28 +75,32 @@ def parse_video_metadata(file, file_size, media_type, use_cache=True):
 
     if use_cache:
         # Get the actual cache value form database
-        if media_type == 'episode':
-            cache_key = TableEpisodes.select(TableEpisodes.ffprobe_cache)\
-                .where(TableEpisodes.path == file)\
-                .dicts()\
+        if media_type == "episode":
+            cache_key = (
+                TableEpisodes.select(TableEpisodes.ffprobe_cache)
+                .where(TableEpisodes.path == file)
+                .dicts()
                 .get()
-        elif media_type == 'movie':
-            cache_key = TableMovies.select(TableMovies.ffprobe_cache)\
-                .where(TableMovies.path == file)\
-                .dicts()\
+            )
+        elif media_type == "movie":
+            cache_key = (
+                TableMovies.select(TableMovies.ffprobe_cache)
+                .where(TableMovies.path == file)
+                .dicts()
                 .get()
+            )
         else:
             cache_key = None
 
         # check if we have a value for that cache key
         try:
             # Unpickle ffprobe cache
-            cached_value = pickle.loads(cache_key['ffprobe_cache'])
+            cached_value = pickle.loads(cache_key["ffprobe_cache"])
         except Exception:
             pass
         else:
             # Check if file size and file id matches and if so, we return the cached value
-            if cached_value['file_size'] == file_size:
+            if cached_value["file_size"] == file_size:
                 return cached_value
 
     # if not, we retrieve the metadata from the file
@@ -121,12 +127,20 @@ def parse_video_metadata(file, file_size, media_type, use_cache=True):
                     data["enzyme"] = mkv
 
     # we write to db the result and return the newly cached ffprobe dict
-    if media_type == 'episode':
-        TableEpisodes.update({TableEpisodes.ffprobe_cache: pickle.dumps(data, pickle.HIGHEST_PROTOCOL)})\
-            .where(TableEpisodes.path == file)\
-            .execute()
-    elif media_type == 'movie':
-        TableMovies.update({TableEpisodes.ffprobe_cache: pickle.dumps(data, pickle.HIGHEST_PROTOCOL)})\
-            .where(TableMovies.path == file)\
-            .execute()
+    if media_type == "episode":
+        TableEpisodes.update(
+            {
+                TableEpisodes.ffprobe_cache: pickle.dumps(
+                    data, pickle.HIGHEST_PROTOCOL
+                )
+            }
+        ).where(TableEpisodes.path == file).execute()
+    elif media_type == "movie":
+        TableMovies.update(
+            {
+                TableEpisodes.ffprobe_cache: pickle.dumps(
+                    data, pickle.HIGHEST_PROTOCOL
+                )
+            }
+        ).where(TableMovies.path == file).execute()
     return data

@@ -22,7 +22,6 @@ def normalize_title(title):
 VIDEO_EXTENSION = [
     # Unknown
     ".webm",
-
     # SDTV
     ".m4v",
     ".3gp",
@@ -62,13 +61,11 @@ VIDEO_EXTENSION = [
     ".fli",
     ".flv",
     ".wpl",
-
     # HD
     ".mkv",
     ".mk3d",
     ".ts",
     ".wtv",
-
     # Bluray
     ".m2ts",
 ]

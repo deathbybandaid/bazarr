@@ -25,22 +25,31 @@ def tmdb_func_cache(func, *args, **kwargs):
     else:
         try:
             # If we were able to pickle func and kwargs, we try to find a matching result in db that isn't expired
-            cached_result = TableTmdbCache.select(TableTmdbCache.result) \
-                .where((TableTmdbCache.function == pickled_func) &
-                       (TableTmdbCache.arguments == pickled_kwargs) &
-                       (TableTmdbCache.timestamp > (time.time() - CACHE_EXPIRATION_TIME))) \
-                .dicts() \
+            cached_result = (
+                TableTmdbCache.select(TableTmdbCache.result)
+                .where(
+                    (TableTmdbCache.function == pickled_func)
+                    & (TableTmdbCache.arguments == pickled_kwargs)
+                    & (
+                        TableTmdbCache.timestamp
+                        > (time.time() - CACHE_EXPIRATION_TIME)
+                    )
+                )
+                .dicts()
                 .get()
+            )
         except TableTmdbCache.DoesNotExist:
             # ok we didn't find one...
             cached_result = None
         if cached_result:
             try:
                 # we try to unpickle the matching cache result
-                pickled_result = pickle.loads(cached_result['result'])
+                pickled_result = pickle.loads(cached_result["result"])
             except Exception:
                 # if we fail we renew the cache
-                return renew_cache(func, pickled_func, pickled_kwargs, **kwargs)
+                return renew_cache(
+                    func, pickled_func, pickled_kwargs, **kwargs
+                )
             else:
                 # else we return the cached value
                 return pickled_result
@@ -52,12 +61,16 @@ def tmdb_func_cache(func, *args, **kwargs):
 def renew_cache(func, pickled_func, pickled_kwargs, **kwargs):
     # function to run a function with it's kwargs, store the pickled result in db and return it
     result = func(**kwargs)
-    TableTmdbCache.insert({
-        TableTmdbCache.timestamp: time.time(),
-        TableTmdbCache.function: pickled_func,
-        TableTmdbCache.arguments: pickled_kwargs,
-        TableTmdbCache.result: pickle.dumps(result, pickle.HIGHEST_PROTOCOL)
-    }).execute()
+    TableTmdbCache.insert(
+        {
+            TableTmdbCache.timestamp: time.time(),
+            TableTmdbCache.function: pickled_func,
+            TableTmdbCache.arguments: pickled_kwargs,
+            TableTmdbCache.result: pickle.dumps(
+                result, pickle.HIGHEST_PROTOCOL
+            ),
+        }
+    ).execute()
     return result
 
 

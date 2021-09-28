@@ -32,14 +32,18 @@ class Condition:
         try:
             new = _registered_conditions[item["type"]]
         except IndexError:
-            raise NotImplementedError(f"{item} condition doesn't have a class.")
+            raise NotImplementedError(
+                f"{item} condition doesn't have a class."
+            )
 
         return new(**item)
 
     def check(self, subtitle) -> bool:
         """Check if the condition is met against a Subtitle object. **May be implemented
         in a subclass**."""
-        to_match = [str(getattr(subtitle, name, None)) for name in self.against]
+        to_match = [
+            str(getattr(subtitle, name, None)) for name in self.against
+        ]
         met = any(item == self._value for item in to_match)
         if met and not self._negate:
             return True
@@ -70,7 +74,9 @@ class RegexCondition(Condition):
     against = ("release_info", "filename")
 
     def check(self, subtitle):
-        to_match = [str(getattr(subtitle, name, None)) for name in self.against]
+        to_match = [
+            str(getattr(subtitle, name, None)) for name in self.against
+        ]
         met = re.search(rf"{self._value}", "".join(to_match)) is not None
         if met and not self._negate:
             return True
