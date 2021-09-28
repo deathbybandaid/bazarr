@@ -1,24 +1,25 @@
 # coding=utf-8
 
-import gc
-import os
-import logging
 import ast
+import gc
+import logging
+import os
 import re
+
+from charamel import Detector
+from config import settings
+from custom_lang import CustomLanguage
+from database import (TableEpisodes, TableMovies, TableShows,
+                      get_profile_cutoff, get_profiles_list)
+from embedded_subs_reader import embedded_subs_reader
+from event_handler import event_stream, hide_progress, show_progress
+from get_languages import (alpha2_from_alpha3, get_language_set,
+                           language_from_alpha2)
+from gevent import sleep
 from guess_language import guess_language
+from helper import get_subtitle_destination_folder
 from subliminal_patch import core, search_external_subtitles
 from subzero.language import Language
-from gevent import sleep
-
-from custom_lang import CustomLanguage
-from database import get_profiles_list, get_profile_cutoff, TableEpisodes, TableShows, TableMovies
-from get_languages import alpha2_from_alpha3, language_from_alpha2, get_language_set
-from config import settings
-from helper import get_subtitle_destination_folder
-
-from embedded_subs_reader import embedded_subs_reader
-from event_handler import event_stream, show_progress, hide_progress
-from charamel import Detector
 
 gc.enable()
 
@@ -498,8 +499,8 @@ def movies_full_scan_subtitles():
 
 
 def series_scan_subtitles(no):
-    from indexer.series.local.series_indexer import update_specific_series
     from indexer.series.local.episodes_indexer import update_series_episodes
+    from indexer.series.local.series_indexer import update_specific_series
     update_specific_series(no)
     update_series_episodes(no, use_cache=False)
 

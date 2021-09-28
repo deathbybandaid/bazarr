@@ -1,11 +1,10 @@
 # coding=utf-8
 
-import os
 import logging
+import os
 
-from charamel import Detector
 from bs4 import UnicodeDammit
-
+from charamel import Detector
 from config import settings
 
 

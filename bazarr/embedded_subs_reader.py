@@ -3,11 +3,12 @@
 import logging
 import os
 import pickle
-from knowit import api
+
 import enzyme
-from enzyme.exceptions import MalformedMKVError
 from custom_lang import CustomLanguage
 from database import TableEpisodes, TableMovies
+from enzyme.exceptions import MalformedMKVError
+from knowit import api
 
 logger = logging.getLogger(__name__)
 

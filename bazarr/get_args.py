@@ -1,8 +1,7 @@
 # coding=utf-8
 
-import os
 import argparse
-
+import os
 from distutils.util import strtobool
 
 parser = argparse.ArgumentParser()

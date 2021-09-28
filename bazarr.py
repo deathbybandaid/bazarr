@@ -1,12 +1,12 @@
 # coding=utf-8
 
+import atexit
 import os
 import platform
 import signal
 import subprocess
 import sys
 import time
-import atexit
 
 from bazarr.get_args import args
 

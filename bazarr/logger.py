@@ -1,15 +1,14 @@
 # coding=utf-8
 
-import os
 import logging
-import re
+import os
 import platform
+import re
 import warnings
-
 from logging.handlers import TimedRotatingFileHandler
-from get_args import args
-from config import settings
 
+from config import settings
+from get_args import args
 
 logger = logging.getLogger()
 

@@ -1,27 +1,32 @@
 # coding=utf-8
 
 from config import settings
-from get_subtitle import wanted_search_missing_subtitles_series, wanted_search_missing_subtitles_movies, \
-    upgrade_subtitles
-from utils import cache_maintenance, check_health
-from indexer.series.local.series_indexer import update_indexed_series
-from indexer.movies.local.movies_indexer import update_indexed_movies
 from get_args import args
+from get_subtitle import (upgrade_subtitles,
+                          wanted_search_missing_subtitles_movies,
+                          wanted_search_missing_subtitles_series)
+from indexer.movies.local.movies_indexer import update_indexed_movies
+from indexer.series.local.series_indexer import update_indexed_series
+from utils import cache_maintenance, check_health
+
 if not args.no_update:
     from check_update import check_if_new_update, check_releases
 else:
     from check_update import check_releases
+
+import os
+from calendar import day_name
+from datetime import datetime, timedelta
+from random import randrange
+
+import pretty
+from apscheduler.events import (EVENT_JOB_ERROR, EVENT_JOB_EXECUTED,
+                                EVENT_JOB_SUBMITTED)
 from apscheduler.schedulers.gevent import GeventScheduler
-from apscheduler.triggers.interval import IntervalTrigger
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
-from apscheduler.events import EVENT_JOB_SUBMITTED, EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
-from datetime import datetime, timedelta
-from calendar import day_name
-import pretty
-from random import randrange
+from apscheduler.triggers.interval import IntervalTrigger
 from event_handler import event_stream
-import os
 
 
 class Scheduler:

@@ -1,16 +1,16 @@
 # coding=utf-8
 
+import json
+import logging
 import os
 import re
-import logging
-import json
-import requests
-import semver
 from shutil import rmtree
 from zipfile import ZipFile
 
-from get_args import args
+import requests
+import semver
 from config import settings
+from get_args import args
 
 
 def check_releases():

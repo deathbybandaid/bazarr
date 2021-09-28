@@ -1,11 +1,11 @@
 # coding=utf-8
 
-from flask import Flask
-from flask_socketio import SocketIO
 import os
 
+from config import base_url, settings
+from flask import Flask
+from flask_socketio import SocketIO
 from get_args import args
-from config import settings, base_url
 
 socketio = SocketIO()
 

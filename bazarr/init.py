@@ -8,9 +8,8 @@ import sys
 
 import rarfile
 import subliminal
+from config import configure_captcha_func, settings
 from dogpile.cache.region import register_backend as register_cache_backend
-
-from config import settings, configure_captcha_func
 from get_args import args
 from logger import configure_logging
 
@@ -53,7 +52,12 @@ def init():
     # deploy requirements.txt
     if not args.no_update:
         try:
-            import lxml, numpy, webrtcvad, gevent, geventwebsocket, setuptools  # noqa
+            import gevent
+            import geventwebsocket
+            import lxml  # noqa
+            import numpy
+            import setuptools
+            import webrtcvad
         except ImportError:
             try:
                 import pip  # noqa

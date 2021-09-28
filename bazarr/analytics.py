@@ -1,17 +1,16 @@
 # coding=utf-8
 
-import pickle
-import random
-import platform
-import os
-import logging
 import codecs
+import logging
+import os
+import pickle
+import platform
+import random
 
-from pyga.requests import Event, Tracker, Session, Visitor, Config
-from pyga.entities import CustomVariable
-
-from get_args import args
 from config import settings
+from get_args import args
+from pyga.entities import CustomVariable
+from pyga.requests import Config, Event, Session, Tracker, Visitor
 
 
 def track_event(category=None, action=None, label=None):

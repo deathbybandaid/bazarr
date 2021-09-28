@@ -1,16 +1,13 @@
 # coding=utf-8
 
+import ast
 import hashlib
 import os
-import ast
-
 from urllib.parse import quote_plus
 
-from subliminal.cache import region
-
-from simpleconfigparser import simpleconfigparser, configparser, NoOptionError
-
 from get_args import args
+from simpleconfigparser import NoOptionError, configparser, simpleconfigparser
+from subliminal.cache import region
 
 
 class SimpleConfigParser(simpleconfigparser):

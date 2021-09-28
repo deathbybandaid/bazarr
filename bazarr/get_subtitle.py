@@ -1,44 +1,48 @@
 # coding=utf-8
 
-import os
-import sys
 import ast
-import logging
-import subprocess
-import time
-import pickle
 import codecs
-import re
 import copy
+import logging
 import operator
-from functools import reduce
-from peewee import fn
+import os
+import pickle
+import re
+import subprocess
+import sys
+import time
 from datetime import datetime, timedelta
-from subzero.language import Language
-from subzero.video import parse_video
-from subliminal import region, Episode, Movie
-from subliminal_patch.core import download_best_subtitles, save_subtitles, download_subtitles, list_all_subtitles
-from subliminal_patch.score import compute_score
-from subliminal_patch.subtitle import Subtitle
-from get_languages import language_from_alpha3, alpha2_from_alpha3, alpha3_from_alpha2, alpha2_from_language, \
-    alpha3_from_language
-from config import settings, get_array_from
-from helper import pp_replace, get_target_folder, force_unicode
-from list_subtitles import store_subtitles, store_subtitles_movie
-from utils import history_log, history_log_movie, get_blacklist
-from notifier import send_notifications, send_notifications_movie
-from get_providers import get_providers, get_providers_auth, provider_throttle, provider_pool
-from subsyncer import subsync
-from guessit import guessit
-from custom_lang import CustomLanguage
-from database import get_exclusion_clause, get_profiles_list, get_audio_profile_languages, TableShows, TableEpisodes, \
-    TableMovies, TableHistory, TableHistoryMovie
-from event_handler import event_stream, show_progress, hide_progress
-from embedded_subs_reader import parse_video_metadata
+from functools import reduce
+from locale import getpreferredencoding
 
 from analytics import track_event
-from locale import getpreferredencoding
+from config import get_array_from, settings
+from custom_lang import CustomLanguage
+from database import (TableEpisodes, TableHistory, TableHistoryMovie,
+                      TableMovies, TableShows, get_audio_profile_languages,
+                      get_exclusion_clause, get_profiles_list)
+from embedded_subs_reader import parse_video_metadata
+from event_handler import event_stream, hide_progress, show_progress
+from get_languages import (alpha2_from_alpha3, alpha2_from_language,
+                           alpha3_from_alpha2, alpha3_from_language,
+                           language_from_alpha3)
+from get_providers import (get_providers, get_providers_auth, provider_pool,
+                           provider_throttle)
+from guessit import guessit
+from helper import force_unicode, get_target_folder, pp_replace
+from list_subtitles import store_subtitles, store_subtitles_movie
+from notifier import send_notifications, send_notifications_movie
+from peewee import fn
 from score import movie_score, series_score
+from subliminal import Episode, Movie, region
+from subliminal_patch.core import (download_best_subtitles, download_subtitles,
+                                   list_all_subtitles, save_subtitles)
+from subliminal_patch.score import compute_score
+from subliminal_patch.subtitle import Subtitle
+from subsyncer import subsync
+from subzero.language import Language
+from subzero.video import parse_video
+from utils import get_blacklist, history_log, history_log_movie
 
 
 def get_video(path, title, providers=None, media_type="movie"):

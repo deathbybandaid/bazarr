@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
-
-from babelfish import language_converters
-from subzero.language import Language
-import pytest
-from vcr import VCR
-from urlparse import urlparse, parse_qs
 from urllib import urlencode
 
-from subliminal_patch.providers.assrt import (
-    AssrtSubtitle, AssrtProvider, language_contains,
-    search_language_in_list, supported_languages)
+import pytest
+from babelfish import language_converters
+from subliminal_patch.providers.assrt import (AssrtProvider, AssrtSubtitle,
+                                              language_contains,
+                                              search_language_in_list,
+                                              supported_languages)
+from subzero.language import Language
+from urlparse import parse_qs, urlparse
+from vcr import VCR
 
 
 def remove_auth_token(request):

@@ -1,9 +1,10 @@
 # coding=utf-8
 
-import apprise
 import logging
 
-from database import TableSettingsNotifier, TableEpisodes, TableShows, TableMovies
+import apprise
+from database import (TableEpisodes, TableMovies, TableSettingsNotifier,
+                      TableShows)
 
 
 def update_notifier():

@@ -1,15 +1,16 @@
-import os
+import ast
 import atexit
 import json
-import ast
-import gevent
-from peewee import Model, TextField, IntegerField, ForeignKeyField, BlobField, BooleanField
-from playhouse.sqliteq import SqliteQueueDatabase
-from playhouse.sqlite_ext import AutoIncrementField
-from playhouse.migrate import SqliteMigrator
+import os
 
-from config import settings, get_array_from
+import gevent
+from config import get_array_from, settings
 from get_args import args
+from peewee import (BlobField, BooleanField, ForeignKeyField, IntegerField,
+                    Model, TextField)
+from playhouse.migrate import SqliteMigrator
+from playhouse.sqlite_ext import AutoIncrementField
+from playhouse.sqliteq import SqliteQueueDatabase
 
 database = SqliteQueueDatabase(os.path.join(args.config_dir, 'db', 'bazarr.db'),
                                use_gevent=True,

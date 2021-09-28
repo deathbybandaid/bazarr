@@ -2,13 +2,14 @@
 # pylama:ignore=W0611
 # TODO unignore and fix W0611
 
-import libs
-from io import BytesIO
 import os
+from io import BytesIO
 from zipfile import ZipFile
 
+import libs
 import pytest
 import requests
+
 try:
     from unittest.mock import Mock
 except ImportError:

@@ -1,59 +1,72 @@
 # coding=utf-8
 
-import sys
-import os
-import io
 import ast
-from datetime import timedelta, datetime
-from dateutil import rrule
-import pretty
-import time
+import gc
+import io
+import json
+import logging
 import operator
-from operator import itemgetter
-from functools import reduce
+import os
 import platform
 import re
-import json
+import sys
+import time
+from datetime import datetime, timedelta
+from functools import reduce, wraps
+from operator import itemgetter
+
 import apprise
-import gc
-from peewee import fn
+import pretty
 import requests
 from bs4 import BeautifulSoup as bso
-
-from get_args import args
-from config import settings, base_url, save_settings, get_settings
-from logger import empty_log
-
-import logging
-from database import get_exclusion_clause, get_profiles_list, get_desired_languages, get_audio_profile_languages, \
-    update_profile_id_list, TableEpisodes, TableShows, TableMovies, TableSettingsLanguages, TableSettingsNotifier, \
-    TableLanguagesProfiles, TableHistory, TableHistoryMovie, TableBlacklist, TableBlacklistMovie, \
-    TableShowsRootfolder, TableMoviesRootfolder
-from get_languages import language_from_alpha2, alpha2_from_alpha3, alpha3_from_alpha2
-from get_subtitle import download_subtitle, series_download_subtitles, manual_search, manual_download_subtitle, \
-    manual_upload_subtitle, wanted_search_missing_subtitles_series, wanted_search_missing_subtitles_movies, \
-    episode_download_subtitles, movies_download_subtitles
-from notifier import send_notifications, send_notifications_movie
-from list_subtitles import store_subtitles, store_subtitles_movie, series_scan_subtitles, movies_scan_subtitles, \
-    list_missing_subtitles, list_missing_subtitles_movies
-from utils import history_log, history_log_movie, blacklist_log, blacklist_delete, blacklist_delete_all, \
-    blacklist_log_movie, blacklist_delete_movie, blacklist_delete_all_movie, delete_subtitles, subtitles_apply_mods, \
-    translate_subtitles_file, check_credentials, get_health_issues
-from get_providers import get_providers, get_providers_auth, list_throttled_providers, reset_throttled_providers, \
-    get_throttled_providers
+from config import base_url, get_settings, save_settings, settings
+from database import (TableBlacklist, TableBlacklistMovie, TableEpisodes,
+                      TableHistory, TableHistoryMovie, TableLanguagesProfiles,
+                      TableMovies, TableMoviesRootfolder,
+                      TableSettingsLanguages, TableSettingsNotifier,
+                      TableShows, TableShowsRootfolder,
+                      get_audio_profile_languages, get_desired_languages,
+                      get_exclusion_clause, get_profiles_list,
+                      update_profile_id_list)
+from dateutil import rrule
 from event_handler import event_stream
-from scheduler import scheduler
-from subsyncer import subsync
 from filesystem import browse_bazarr_filesystem
-from indexer.series.local.series_indexer import list_series_directories, get_series_match, get_series_metadata
-from indexer.movies.local.movies_indexer import list_movies_directories, get_movies_match, get_movies_metadata
-
+from flask import Blueprint, jsonify, request, session
+from flask_restful import Api, Resource, abort
+from get_args import args
+from get_languages import (alpha2_from_alpha3, alpha3_from_alpha2,
+                           language_from_alpha2)
+from get_providers import (get_providers, get_providers_auth,
+                           get_throttled_providers, list_throttled_providers,
+                           reset_throttled_providers)
+from get_subtitle import (download_subtitle, episode_download_subtitles,
+                          manual_download_subtitle, manual_search,
+                          manual_upload_subtitle, movies_download_subtitles,
+                          series_download_subtitles,
+                          wanted_search_missing_subtitles_movies,
+                          wanted_search_missing_subtitles_series)
+from indexer.movies.local.movies_indexer import (get_movies_match,
+                                                 get_movies_metadata,
+                                                 list_movies_directories)
+from indexer.series.local.series_indexer import (get_series_match,
+                                                 get_series_metadata,
+                                                 list_series_directories)
+from list_subtitles import (list_missing_subtitles,
+                            list_missing_subtitles_movies,
+                            movies_scan_subtitles, series_scan_subtitles,
+                            store_subtitles, store_subtitles_movie)
+from logger import empty_log
+from notifier import send_notifications, send_notifications_movie
+from peewee import fn
+from scheduler import scheduler
 from subliminal_patch.core import SUBTITLE_EXTENSIONS, guessit
-
-from flask import jsonify, request, Blueprint, session
-
-from flask_restful import Resource, Api, abort
-from functools import wraps
+from subsyncer import subsync
+from utils import (blacklist_delete, blacklist_delete_all,
+                   blacklist_delete_all_movie, blacklist_delete_movie,
+                   blacklist_log, blacklist_log_movie, check_credentials,
+                   delete_subtitles, get_health_issues, history_log,
+                   history_log_movie, subtitles_apply_mods,
+                   translate_subtitles_file)
 
 api_bp = Blueprint('api', __name__, url_prefix=base_url.rstrip('/') + '/api')
 api = Api(api_bp)

@@ -3,7 +3,7 @@
 
 # Gevent monkey patch if gevent available. If not, it will be installed on during the init process.
 try:
-    from gevent import monkey, Greenlet
+    from gevent import Greenlet, monkey
 except ImportError:
     pass
 else:
@@ -22,28 +22,27 @@ if os.path.isfile(version_file):
 os.environ["BAZARR_VERSION"] = bazarr_version.lstrip('v')
 
 from libs import clean_libs, set_libs
+
 clean_libs()
 set_libs()
 
+from config import base_url, configure_proxy_func, settings
 from get_args import args
-from config import settings, configure_proxy_func, base_url
-
 from init import init
+
 init()
-from database import System
-
-from notifier import update_notifier
-
-from urllib.parse import unquote
-from get_languages import load_language_in_db
-from flask import request, redirect, abort, render_template, session, send_file
-
-from check_update import apply_update, check_releases
-from server import app, webserver
 from functools import wraps
-from utils import check_credentials
+from urllib.parse import unquote
+
 import requests
+from check_update import apply_update, check_releases
+from database import System
+from flask import abort, redirect, render_template, request, send_file, session
+from get_languages import load_language_in_db
 from indexer.file_watcher import fileWatcher
+from notifier import update_notifier
+from server import app, webserver
+from utils import check_credentials
 
 # Install downloaded update
 if bazarr_version != '':

@@ -1,21 +1,22 @@
 # coding=utf-8
 
-import os
 import datetime
 import logging
-import subliminal_patch
-import pretty
-import time
+import os
 import socket
-import requests
+import time
 
-from get_args import args
-from config import settings, get_array_from
+import pretty
+import requests
+import subliminal_patch
+from config import get_array_from, settings
 from event_handler import event_stream
-from subliminal_patch.exceptions import TooManyRequests, APIThrottled, ParseResponseError, IPAddressBlocked
-from subliminal.providers.opensubtitles import DownloadLimitReached
-from subliminal.exceptions import DownloadLimitExceeded, ServiceUnavailable
+from get_args import args
 from subliminal import region as subliminal_cache_region
+from subliminal.exceptions import DownloadLimitExceeded, ServiceUnavailable
+from subliminal.providers.opensubtitles import DownloadLimitReached
+from subliminal_patch.exceptions import (APIThrottled, IPAddressBlocked,
+                                         ParseResponseError, TooManyRequests)
 from subliminal_patch.extensions import provider_registry
 
 

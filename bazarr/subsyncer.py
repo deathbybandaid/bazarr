@@ -1,11 +1,11 @@
 import logging
 import os
-from ffsubsync.ffsubsync import run, make_parser
-from utils import get_binary
-from utils import history_log, history_log_movie
-from get_languages import language_from_alpha2
+
 from config import settings
+from ffsubsync.ffsubsync import make_parser, run
 from get_args import args
+from get_languages import language_from_alpha2
+from utils import get_binary, history_log, history_log_movie
 
 
 class SubSyncer:

@@ -1,20 +1,21 @@
 # coding=utf-8
 
-import warnings
+import io
 import logging
 import os
-import io
+import warnings
+
+from app import create_app
+from config import base_url, settings
+from database import database
+from get_args import args
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
 
-from get_args import args
-from config import settings, base_url
-from database import database
-
-from app import create_app
 app = create_app()
 
 from api import api_bp  # noqa
+
 app.register_blueprint(api_bp)
 
 

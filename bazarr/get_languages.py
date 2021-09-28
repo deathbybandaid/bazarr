@@ -1,10 +1,9 @@
 # coding=utf-8
 
 import pycountry
-
-from subzero.language import Language
 from custom_lang import CustomLanguage
 from database import TableSettingsLanguages
+from subzero.language import Language
 
 
 def load_language_in_db():

@@ -1,31 +1,32 @@
 # coding=utf-8
 
-import os
-import time
-import platform
-import logging
-import requests
-import pysubs2
-import json
-import hashlib
-import stat
-
-from whichcraft import which
-from get_args import args
-from config import settings
-from custom_lang import CustomLanguage
-from database import TableHistory, TableHistoryMovie, TableBlacklist, TableBlacklistMovie
-from event_handler import event_stream
-from get_languages import language_from_alpha2, alpha3_from_alpha2
-from list_subtitles import store_subtitles, store_subtitles_movie
-from subliminal_patch.subtitle import Subtitle
-from subliminal_patch.core import get_subtitle_path
-from subzero.language import Language
-from subliminal import region as subliminal_cache_region
-from deep_translator import GoogleTranslator
-from dogpile.cache import make_region
 import datetime
 import glob
+import hashlib
+import json
+import logging
+import os
+import platform
+import stat
+import time
+
+import pysubs2
+import requests
+from config import settings
+from custom_lang import CustomLanguage
+from database import (TableBlacklist, TableBlacklistMovie, TableHistory,
+                      TableHistoryMovie)
+from deep_translator import GoogleTranslator
+from dogpile.cache import make_region
+from event_handler import event_stream
+from get_args import args
+from get_languages import alpha3_from_alpha2, language_from_alpha2
+from list_subtitles import store_subtitles, store_subtitles_movie
+from subliminal import region as subliminal_cache_region
+from subliminal_patch.core import get_subtitle_path
+from subliminal_patch.subtitle import Subtitle
+from subzero.language import Language
+from whichcraft import which
 
 region = make_region().configure('dogpile.cache.memory')
 
